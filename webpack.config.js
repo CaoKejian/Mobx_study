@@ -1,6 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('@nuxt/friendly-errors-webpack-plugin');
 
+class MyCustomPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tap('MyCustomPlugin', (stats) => {
+      console.log('🚀访问：http://localhost:9000');
+    });
+  }
+}
 module.exports = {
   entry: './src/index.tsx',
   output: {
@@ -29,7 +37,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
+    new FriendlyErrorsWebpackPlugin(),
+    new MyCustomPlugin()
   ],
+  stats: 'errors-only',
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
